@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our 4th Love Anniversary</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            cursor: none;
+        }
+
+        body {
+            background: linear-gradient(135deg, #ff6b9d, #c779d0, #4bc0c8);
+            min-height: 100vh;
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            text-align: center;
+            perspective: 1000px;
+        }
+
+        .cursor {
+            position: fixed;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.8);
+            pointer-events: none;
+            z-index: 9999;
+            mix-blend-mode: difference;
+            transition: transform 0.1s ease;
+        }
+
+        .cursor-follower {
+            position: fixed;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            pointer-events: none;
+            z-index: 9998;
+            transition: transform 0.4s ease;
+        }
+
+        .container {
+            max-width: 1200px;
+            padding: 2rem;
+            z-index: 10;
+            transform-style: preserve-3d;
+            transition: transform 0.3s ease;
+        }
+
+        .title {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);
+            animation: float 3s ease-in-out infinite;
+            transform: translateZ(30px);
+        }
+
+        .subtitle {
+            font-size: 1.5rem;
+            margin-bottom: 2rem;
+            font-weight: 300;
+            transform: translateZ(20px);
+        }
+
+        .countdown-container {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin: 3rem 0;
+            flex-wrap: wrap;
+            transform: translateZ(25px);
+        }
+
+        .countdown-box {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 1.5rem;
+            min-width: 120px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .countdown-box:hover {
+            transform: translateY(-10px) translateZ(20px);
+            background: rgba(255, 255, 255, 0.25);
+        }
+
+        .countdown-value {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .countdown-label {
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 500;
+        }
+
+        .total-time-container {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin: 3rem 0;
+            flex-wrap: wrap;
+            transform: translateZ(25px);
+        }
+
+        .total-time-box {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 2rem;
+            min-width: 180px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .total-time-box:hover {
+            transform: translateY(-10px) translateZ(20px);
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .total-time-value {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .total-time-label {
+            font-size: 1.2rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 500;
+        }
+
+        .message {
+            max-width: 800px;
+            margin: 2rem auto;
+            font-size: 1.2rem;
+            line-height: 1.6;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transform: translateZ(15px);
+        }
+
+        .heart {
+            position: absolute;
+            font-size: 1.5rem;
+            color: #ff4d6d;
+            opacity: 0;
+            animation: fall 5s linear infinite;
+            z-index: 1;
+        }
+
+        .floating-hearts {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .interactive-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            color: white;
+            font-size: 1.2rem;
+            margin: 1rem;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transform: translateZ(10px);
+        }
+
+        .interactive-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.05) translateZ(15px);
+        }
+
+        .memory-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 1rem;
+            margin: 2rem 0;
+            transform: translateZ(20px);
+        }
+
+        .memory-box {
+            width: 200px;
+            height: 200px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .memory-box:hover {
+            transform: scale(1.05) translateZ(25px);
+            background: rgba(255, 255, 255, 0.25);
+        }
+
+        .memory-box i {
+            font-size: 3rem;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0) translateZ(30px);
+            }
+            50% {
+                transform: translateY(-10px) translateZ(30px);
+            }
+        }
+
+        @keyframes fall {
+            0% {
+                transform: translateY(-100px) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .title {
+                font-size: 2.5rem;
+            }
+            .countdown-container, .total-time-container {
+                gap: 1rem;
+            }
+            .countdown-box, .total-time-box {
+                min-width: 100px;
+                padding: 1rem;
+            }
+            .countdown-value {
+                font-size: 2rem;
+            }
+            .total-time-value {
+                font-size: 2.5rem;
+            }
+            .memory-box {
+                width: 150px;
+                height: 150px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="cursor"></div>
+    <div class="cursor-follower"></div>
+    
+    <div class="floating-hearts" id="hearts-container"></div>
+    
+    <div class="container">
+        <h1 class="title">Happy 4th Anniversary!</h1>
+        <p class="subtitle">Celebrating our love since October 28, 2021</p>
+        
+        <div class="countdown-container">
+            <div class="countdown-box">
+                <div class="countdown-value" id="years">0</div>
+                <div class="countdown-label">Years</div>
+            </div>
+            <div class="countdown-box">
+                <div class="countdown-value" id="months">0</div>
+                <div class="countdown-label">Months</div>
+            </div>
+            <div class="countdown-box">
+                <div class="countdown-value" id="days">0</div>
+                <div class="countdown-label">Days</div>
+            </div>
+            <div class="countdown-box">
+                <div class="countdown-value" id="hours">0</div>
+                <div class="countdown-label">Hours</div>
+            </div>
+            <div class="countdown-box">
+                <div class="countdown-value" id="minutes">0</div>
+                <div class="countdown-label">Minutes</div>
+            </div>
+            <div class="countdown-box">
+                <div class="countdown-value" id="seconds">0</div>
+                <div class="countdown-label">Seconds</div>
+            </div>
+        </div>
+        
+        <h2 class="subtitle">Total Time Together</h2>
+        <div class="total-time-container">
+            <div class="total-time-box">
+                <div class="total-time-value" id="total-days">0</div>
+                <div class="total-time-label">Days</div>
+            </div>
+            <div class="total-time-box">
+                <div class="total-time-value" id="total-hours">0</div>
+                <div class="total-time-label">Hours</div>
+            </div>
+            <div class="total-time-box">
+                <div class="total-time-value" id="total-minutes">0</div>
+                <div class="total-time-label">Minutes</div>
+            </div>
+            <div class="total-time-box">
+                <div class="total-time-value" id="total-seconds">0</div>
+                <div class="total-time-label">Seconds</div>
+            </div>
+        </div>
+        
+        <div class="message">
+            <p>Four incredible years have passed since we started this beautiful journey together. Every moment with you has been a precious gift, filled with love, laughter, and unforgettable memories.</p>
+            <p>Through all the seasons, through sunshine and rain, our love has only grown stronger. Thank you for being my partner, my best friend, and my greatest love.</p>
+            <p>Here's to many more years of creating beautiful memories together. Forever and always.</p>
+        </div>
+        
+        <div class="memory-container">
+            <div class="memory-box">
+                <i class="fas fa-heart"></i>
+            </div>
+            <div class="memory-box">
+                <i class="fas fa-kiss-wink-heart"></i>
+            </div>
+            <div class="memory-box">
+                <i class="fas fa-heartbeat"></i>
+            </div>
+            <div class="memory-box">
+                <i class="fas fa-gem"></i>
+            </div>
+        </div>
+        
+        <button class="interactive-btn" id="love-btn">Send Love <i class="fas fa-heart"></i></button>
+        <button class="interactive-btn" id="memory-btn">Our Memories <i class="fas fa-images"></i></button>
+    </div>
+
+    <script>
+        // Custom cursor
+        const cursor = document.querySelector('.cursor');
+        const cursorFollower = document.querySelector('.cursor-follower');
+        
+        document.addEventListener('mousemove', (e) => {
+            cursor.style.left = e.clientX + 'px';
+            cursor.style.top = e.clientY + 'px';
+            
+            setTimeout(() => {
+                cursorFollower.style.left = e.clientX + 'px';
+                cursorFollower.style.top = e.clientY + 'px';
+            }, 100);
+        });
+        
+        // Countdown timer
+        const anniversaryDate = new Date('October 28, 2021 00:00:00').getTime();
+        
+        function updateCountdown() {
+            const now = new Date().getTime();
+            const timeDiff = now - anniversaryDate;
+            
+            // Calculate years, months, days, etc.
+            const seconds = Math.floor((timeDiff / 1000) % 60);
+            const minutes = Math.floor((timeDiff / (1000 * 60)) % 60);
+            const hours = Math.floor((timeDiff / (1000 * 60 * 60)) % 24);
+            const days = Math.floor((timeDiff / (1000 * 60 * 60 * 24)) % 30.436875); // Average days in a month
+            const months = Math.floor((timeDiff / (1000 * 60 * 60 * 24 * 30.436875)) % 12);
+            const years = Math.floor(timeDiff / (1000 * 60 * 60 * 24 * 365.25));
+            
+            // Calculate totals
+            const totalSeconds = Math.floor(timeDiff / 1000);
+            const totalMinutes = Math.floor(timeDiff / (1000 * 60));
+            const totalHours = Math.floor(timeDiff / (1000 * 60 * 60));
+            const totalDays = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
+            
+            document.getElementById('years').innerText = years;
+            document.getElementById('months').innerText = months;
+            document.getElementById('days').innerText = Math.floor(days);
+            document.getElementById('hours').innerText = hours;
+            document.getElementById('minutes').innerText = minutes;
+            document.getElementById('seconds').innerText = seconds;
+            
+            document.getElementById('total-days').innerText = totalDays.toLocaleString();
+            document.getElementById('total-hours').innerText = totalHours.toLocaleString();
+            document.getElementById('total-minutes').innerText = totalMinutes.toLocaleString();
+            document.getElementById('total-seconds').innerText = totalSeconds.toLocaleString();
+        }
+        
+        setInterval(updateCountdown, 1000);
+        updateCountdown();
+        
+        // Floating hearts
+        const heartsContainer = document.getElementById('hearts-container');
+        
+        function createHeart() {
+            const heart = document.createElement('div');
+            heart.classList.add('heart');
+            heart.innerHTML = '❤';
+            heart.style.left = Math.random() * 100 + 'vw';
+            heart.style.animationDuration = (Math.random() * 3 + 3) + 's';
+            heart.style.fontSize = (Math.random() * 20 + 10) + 'px';
+            heartsContainer.appendChild(heart);
+            
+            setTimeout(() => {
+                heart.remove();
+            }, 5000);
+        }
+        
+        setInterval(createHeart, 300);
+        
+        // Interactive buttons
+        const loveBtn = document.getElementById('love-btn');
+        const memoryBtn = document.getElementById('memory-btn');
+        
+        loveBtn.addEventListener('click', () => {
+            for (let i = 0; i < 20; i++) {
+                setTimeout(() => {
+                    createHeart();
+                }, i * 100);
+            }
+            
+            // Create a burst effect
+            const burstContainer = document.createElement('div');
+            burstContainer.style.position = 'fixed';
+            burstContainer.style.top = '50%';
+            burstContainer.style.left = '50%';
+            burstContainer.style.transform = 'translate(-50%, -50%)';
+            burstContainer.style.pointerEvents = 'none';
+            burstContainer.style.zIndex = '100';
+            
+            for (let i = 0; i < 30; i++) {
+                const burstHeart = document.createElement('div');
+                burstHeart.classList.add('heart');
+                burstHeart.innerHTML = '❤';
+                burstHeart.style.position = 'absolute';
+                burstHeart.style.fontSize = (Math.random() * 20 + 15) + 'px';
+                burstHeart.style.color = '#ff4d6d';
+                
+                const angle = Math.random() * Math.PI * 2;
+                const distance = Math.random() * 200 + 100;
+                
+                burstContainer.appendChild(burstHeart);
+                
+                setTimeout(() => {
+                    burstHeart.style.transition = 'all 1s ease-out';
+                    burstHeart.style.transform = `translate(${Math.cos(angle) * distance}px, ${Math.sin(angle) * distance}px)`;
+                    burstHeart.style.opacity = '0';
+                }, 10);
+            }
+            
+            document.body.appendChild(burstContainer);
+            
+            setTimeout(() => {
+                burstContainer.remove();
+            }, 1500);
+        });
+        
+        memoryBtn.addEventListener('click', () => {
+            const memoryBoxes = document.querySelectorAll('.memory-box');
+            memoryBoxes.forEach(box => {
+                box.style.animation = 'none';
+                setTimeout(() => {
+                    box.style.animation = 'pulse 0.5s';
+                }, 10);
+            });
+            
+            // Change memory box icons temporarily
+            const icons = ['fas fa-heart', 'fas fa-kiss-wink-heart', 'fas fa-heartbeat', 'fas fa-gem'];
+            memoryBoxes.forEach((box, index) => {
+                const originalIcon = box.querySelector('i').className;
+                box.querySelector('i').className = 'fas fa-star';
+                
+                setTimeout(() => {
+                    box.querySelector('i').className = originalIcon;
+                }, 1000);
+            });
+        });
+        
+        // 3D effect on mousemove
+        document.addEventListener('mousemove', (e) => {
+            const xAxis = (window.innerWidth / 2 - e.pageX) / 25;
+            const yAxis = (window.innerHeight / 2 - e.pageY) / 25;
+            
+            document.querySelector('.container').style.transform = `rotateY(${xAxis}deg) rotateX(${yAxis}deg)`;
+        });
+        
+        // Reset container rotation when mouse leaves
+        document.querySelector('.container').addEventListener('mouseleave', () => {
+            document.querySelector('.container').style.transform = 'rotateY(0deg) rotateX(0deg)';
+        });
+    </script>
+</body>
+</html>
